@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokedex</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <div id="container">
+    <div id="header">
+      <img src="assets//pokeball.png" alt="pokeball">
+      <h1>
+        POKEDEX
+      </h1>
+      <img src="assets/pokedex.png" alt="pokedex">
+    </div>
+    <div id="navbar">
+      <button class="navButton">Previous</button>
+      <button class="navButton">Next</button>
+    </div>
+    <div id="pokemon-content">
+    </div>
+
+    <!-- this appears after clicking on pokemon card-->
+    <div id="pokemon-details">
+      <div id="pokemon-header">
+        <div id="pokemon-img"></div>
+        <h1 id="pokemon-name"></h1>
+      </div>
+      <div id="pokemon-attributes">
+        <div id="pokemon-types">Type: </div>
+        <div id="pokemon-abilities">Abilities: </div>
+      </div>
+      <div id="pokemon-info">
+        <div id="pokemon-statistics"></div>
+        <div id="pokemon-locations">
+          <h3>Locations: </h3>
+        </div>
+      </div>
+    </div>
+    <div id="cover"></div>
+  </div>
+</body>
+</html>
