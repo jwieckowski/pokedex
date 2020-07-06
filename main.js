@@ -3,10 +3,20 @@ const navButtons = [...document.getElementsByClassName('navButton')]
  
 const details = document.getElementById('pokemon-details')
 const cover = document.getElementById('cover')
+const closeButton = document.getElementById('close-button')
 
 const pokeAPIUrls = {
   base: 'https://pokeapi.co/api/v2/pokemon',
   images: 'https://pokeres.bastionbot.org/images/pokemon'
+}
+
+const pokeDetailsCard = {
+  img: document.getElementById('pokemon-img'),
+  name: document.getElementById('pokemon-name'),
+  types: document.getElementById('pokemon-types'),
+  abilities: document.getElementById('pokemon-abilities'),
+  statistics: document.getElementById('pokemon-statistics'),
+  locations: document.getElementById('location-list'),
 }
 
 const Pokedex = () => {
@@ -34,6 +44,12 @@ const Pokedex = () => {
     getCurrentData: () => {
       return currentData
     },
+    setLowerIndex: (index) => {
+      lowerIndex += index
+    },
+    getLowerIndex: () => {
+      return lowerIndex
+    }
   }
 }
 
@@ -43,7 +59,7 @@ const getPokemons = async (url) => {
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      pokedex.setPrevPage(data.prev)
+      pokedex.setPrevPage(data.previous)
       pokedex.setNextPage(data.next)
       pokedex.setCurrentData(data.results)
       displayPokemons(pokedex.getCurrentData())
@@ -68,9 +84,9 @@ const displayPokemons = (data) => {
     const pokeName = document.createElement('h4')
     const pokeID = document.createAttribute('pokemon-id')
     const pokeURL = document.createAttribute('pokemon-url')
-    pokeID.value = ind+1
+    pokeID.value = pokedex.getLowerIndex() + ind + 1
     pokeURL.value = d.url
-    pokeImg.srcset = `${pokeAPIUrls.images}/${ind+1}.png`
+    pokeImg.srcset = `${pokeAPIUrls.images}/${pokeID.value}.png`
     pokeName.innerHTML = formatName(d.name)
     pokeCard.classList.add('pokemon-card')
     pokeCard.setAttributeNode(pokeID)
@@ -82,6 +98,7 @@ const displayPokemons = (data) => {
 }
 
 const showDetails = () => {
+  details.style.display === 'block' && clearPokemonDetails() 
   details.style.display = details.style.display === 'block' ? 'none' : 'block' 
   cover.style.display = cover.style.display === 'block' ? 'none' : 'block'
 }
@@ -94,7 +111,6 @@ const displayPokemonDetails = async (e) => {
   const pokeURL = e.target.getAttribute('pokemon-url') || e.target.parentElement.getAttribute('pokemon-url')
   const data = await getPokemonInfo(pokeURL)
   fillPokemonDetails(data, pokeID)
-  console.log(data)
   
   const types = document.getElementById('pokemon-types')
   data.types.map(type => {
@@ -123,18 +139,20 @@ const displayPokemonDetails = async (e) => {
     statistics.appendChild(div)
   })
 
-  const locations = document.getElementById('pokemon-locations')
+  const locations = document.getElementById('location-list')
   const dataLocations = await fetch(data.location_area_encounters)
     .then(response => response.json())
     .then(data => data)
-  dataLocations.map(location => {
-    const div = document.createElement('div')
-    const p = document.createElement('p')
-    div.classList.add('poke-location')
-    p.innerHTML = formatArea(location.location_area.name)
-    div.appendChild(p)
-    locations.appendChild(div)
-  })
+  dataLocations.length !== 0
+    ? dataLocations.map(location => {
+      const div = document.createElement('div')
+      const p = document.createElement('p')
+      div.classList.add('poke-location')
+      p.innerHTML = formatArea(location.location_area.name)
+      div.appendChild(p)
+      locations.appendChild(div)
+    })
+    : locations.innerHTML = "Wasn't found yet..."
 
   showDetails()
 }
@@ -151,15 +169,40 @@ const fillPokemonDetails = (data, id) => {
 
 }
 
+const clearPokemonDetails = () => {
+  pokeDetailsCard.img.innerHTML = ''
+  pokeDetailsCard.name.innerHTML = ''
+  pokeDetailsCard.types.innerHTML = 'Type: '
+  pokeDetailsCard.abilities.innerHTML = 'Abilities: '
+  pokeDetailsCard.statistics.innerHTML = ''
+  pokeDetailsCard.locations.innerHTML = ''
+}
+
+
+const getPrevPagePokemons = () => {
+  if (pokedex.getPrevPage() === null) return
+  pokeContent.innerHTML = ''
+  getPokemons(pokedex.getPrevPage())
+  pokedex.setLowerIndex(-20)
+}
+
+const getNextPagePokemons = () => {
+  if (pokedex.getNextPage() === null) return
+  pokeContent.innerHTML = ''
+  getPokemons(pokedex.getNextPage())
+  pokedex.setLowerIndex(20)
+}
+
 const main = async () => {
-  // navButtons.map((button, index) => {
-  //   index === 0 
-  //     ? button.addEventListener('click', pokedex.getPrevPage)
-  //     : button.addEventListener('click', pokedex.getPrevPage)
-  // })
+  navButtons.map((button, index) => {
+    index === 0 
+      ? button.addEventListener('click', getPrevPagePokemons)
+      : button.addEventListener('click', getNextPagePokemons)
+  })
   await getPokemons(pokeAPIUrls.base)
   document.body.addEventListener('click', displayPokemonDetails)
   cover.addEventListener('click', showDetails)
+  closeButton.addEventListener('click', showDetails)
 }
 
 main()
