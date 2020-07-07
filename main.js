@@ -87,6 +87,7 @@ const displayPokemons = (data) => {
     pokeID.value = pokedex.getLowerIndex() + ind + 1
     pokeURL.value = d.url
     pokeImg.srcset = `${pokeAPIUrls.images}/${pokeID.value}.png`
+    pokeImg.classList.add('pokemon-image')
     pokeName.innerHTML = formatName(d.name)
     pokeCard.classList.add('pokemon-card')
     pokeCard.setAttributeNode(pokeID)
@@ -164,6 +165,7 @@ const fillPokemonDetails = (data, id) => {
   const pokeImg = document.getElementById('pokemon-img')
   const img = document.createElement('img')
   img.srcset = `${pokeAPIUrls.images}/${id}.png`
+  img.classList.add('pokemon-image')
   pokeImg.appendChild(img)
 
 
