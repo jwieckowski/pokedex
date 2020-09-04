@@ -13,5 +13,5 @@ Pokemon Pokedex using [PokeApi](https://pokeapi.co/docs/v2)
 
 ## Project views
 
-![Home Page](https://cdn.discordapp.com/attachments/751338870360113155/751338944423264316/homePage.png)
-![Pokemon details page](https://cdn.discordapp.com/attachments/751338870360113155/751338958050295878/details.png)
+![Home Page](https://cdn.discordapp.com/attachments/751338870360113155/751338958050295878/homePage.png)
+![Pokemon details page](https://cdn.discordapp.com/attachments/751338870360113155/751338944423264316/details.png)
